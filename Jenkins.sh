@@ -1,16 +1,4 @@
-## First install maven and its java versions, if server need it in future. To avoid version mismatch for maven.
 
-yum install java-1.8.0-openjdk maven -y
-yum install git -y
-yum install java-17-amazon-corretto -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-yum install jenkins -y
-systemctl start jenkins
-systemctl status jenkins
-mvn -v
-
---------------------------------------
 
 #!/bin/bash
 # Jenkins installation script for Amazon Linux 2 with Amazon Corretto 21 (Java 21)
@@ -61,10 +49,26 @@ git -v
 echo "Jenkins installation completed. Access it at http://<your-server-public-ip>:8080"
 
 
-----------------------------------------
+#-----------------------------------------
 
-port: 8080(Default)
+# port: 8080(Default)
+
+#-----------------------------------------
+
+## First install maven and its java versions, if server need it in future. To avoid version mismatch for maven.
+
+#yum install java-1.8.0-openjdk maven -y
+#yum install git -y
+#yum install java-17-amazon-corretto -y
+#sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+#sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+#yum install jenkins -y
+#systemctl start jenkins
+#systemctl status jenkins
+#mvn -v
+
+#--------------------------------------
 
 # To change java version in server
-cmd: update-alternatives --config java
- -> select appropriate version by giving index of java version
+# cmd: update-alternatives --config java
+# => select appropriate version by giving index of java version

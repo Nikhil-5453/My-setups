@@ -1,0 +1,48 @@
+---
+ - name: Installing java17, jenkins, Docker
+   hosts: localhost
+   become: yes
+
+   vars:
+     j_pack: java-17-amazon-corretto
+     d_install: docker
+
+   tasks:
+     - name: Installing Java 17
+       yum:
+         name: "{{ j_pack }}"
+         state: present
+
+     - name: Downoading jenkins
+       shell: |
+         sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+         sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+     - name: Installing jenkins
+       yum:
+         name: jenkins
+         state: present
+
+     - name: Installing Docker
+       yum:
+         name: "{{ d_install }}"
+         state: present
+
+     - name: starting jenkins
+       systemd:
+         name: jenkins
+         state: started
+         enabled: yes
+
+     - name: Starting Docker and checking status
+       shell: |
+         systemctl start docker
+         systemctl status docker
+         docker --version
+       register: docker_output
+
+     - name: Debug Docker output
+       debug:
+         var: docker_output.stdout
+
+...

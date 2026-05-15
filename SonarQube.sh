@@ -11,7 +11,7 @@ sh sonar.sh status
 cd
 update-alternatives --config java
 
-
+/*
 ------------------
 port: 9000(Default)
 login: default id and psswd is 'admin'
@@ -44,3 +44,4 @@ node{
             sh "${mavenCMD} sonar:sonar"
         }
     }
+*/

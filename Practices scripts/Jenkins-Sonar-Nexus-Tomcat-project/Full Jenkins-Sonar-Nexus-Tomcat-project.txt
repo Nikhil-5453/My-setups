@@ -1,0 +1,28 @@
+## Full Jenkins-Sonar-Nexus-Tomcat-project ##
+## Sample Script ##
+node{
+    stage("code"){
+       git 'https://github.com/Nikhil-5453/D-project.git'
+       echo "taking from git scm"
+    }
+}
+node{
+    stage("Build"){
+        sh 'mvn clean package'
+    }
+}
+node{
+    stage("CQA"){
+        withSonarQubeEnv('mysonar'){
+            def mavenHome = tool name: "maven", type: "maven"
+            def mavenCMD = "${mavenHome}/bin/mvn"
+            sh "${mavenCMD} sonar:sonar"
+        }
+    }
+    stage("Artifact"){
+        nexusArtifactUploader artifacts: [[artifactId: 'myweb', classifier: '', file: 'target/myweb-8.6.5.war', type: '.war']], credentialsId: 'nexus', groupId: 'in.javahome', nexusUrl: '13.232.61.26:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'myrepo', version: '8.6.5'
+    }
+    stage("Deploy"){
+        deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: 'http://13.235.68.232:8080')], contextPath: 'projects', war: 'target/*.war'
+    }
+}

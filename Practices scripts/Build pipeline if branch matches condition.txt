@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Check Branch') {
+            steps {
+                git 'https://github.com/Nikhil-5453/D-project.git'
+                script {
+                    def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    if (branchName != 'master') {
+                        error "Branch is not master. Aborting the build."
+                    } else {
+                        echo "Branch is master. Proceeding with the build."
+                    }
+                }
+            }
+        }
+        stage('Code') {
+            steps {
+                echo 'This is the code stage'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+                echo "this is build stage"
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'This is the test stage'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution finished'
+        }
+        success {
+            echo 'Your pipeline is a success'
+        }
+        failure {
+            echo 'Your pipeline has failed'
+        }
+        aborted {
+            echo 'Your pipeline was cancelled or aborted'
+        }
+        unstable {
+            echo 'Your pipeline has become unstable'
+        }
+    }
+}
