@@ -24,7 +24,7 @@ sudo yum install -y jenkins
 
 echo "Configuring Jenkins to use Java 21..."
 JAVA_HOME_PATH=$(dirname $(dirname $(readlink -f $(which java))))
-sudo tee -a /etc/sysconfig/jenkins <<EOF
+cat <<EOF >> /etc/sysconfig/jenkins
 JAVA_HOME=$JAVA_HOME_PATH
 JENKINS_JAVA_CMD=$JAVA_HOME_PATH/bin/java
 EOF
@@ -46,7 +46,7 @@ java -version
 mvn -v
 git -v
 
-echo "Jenkins installation completed. Access it at http://<your-server-public-ip>:8080"
+echo "Jenkins installation completed. Access it at http://$(curl -s ipinfo.io/ip):8080"
 
 
 #-----------------------------------------
