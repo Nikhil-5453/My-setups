@@ -5,8 +5,12 @@
 echo "***** Install and setup docker runtime *****"
 yum install docker -y && systemctl start docker
 
-## Minikube can be installed by either binaries (or) rpm package ##
+echo "***** Adding ec2-user to docker group *****"
+sudo usermod -aG docker ec2-user
+sudo systemctl enable docker
+sudo systemctl start docker
 
+## Minikube can be installed by either binaries (or) rpm package ##
 echo "***** Download Minikube binaries *****"
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 
