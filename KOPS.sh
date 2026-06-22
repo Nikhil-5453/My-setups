@@ -11,7 +11,7 @@ unzip awscliv2.zip
 sudo ./aws/install
 
 echo "modifying permissions"
-sudo +x aws
+sudo chmod +x aws
 
 echo "modify export in .bashrc"
 sed -i '$ a\export PATH=$PATH:/usr/local/bin' ~/.bashrc
