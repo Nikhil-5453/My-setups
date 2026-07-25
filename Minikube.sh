@@ -17,8 +17,7 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-
 echo "***** Installing binary *****"
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-echo "***** verifying installation *****"
-minikube version
+
 
 
 ## kubectl is the CLI tool used to interact with your Kubernetes cluster. ##
@@ -33,5 +32,7 @@ sudo mv kubectl /usr/local/bin/
 
 
 echo "***** starting minikube *****"
+echo "***** verifying installation *****"
+minikube version
 minikube start --driver=docker --force
 minikube status
