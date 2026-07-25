@@ -1,6 +1,7 @@
 # Using KOPS cluster.
 # For Minikube follow commands except for service expose., need to do port-foward since cant create a LB for single node.
 
+#!/bin/bash
 # Install HELM as pre-requiste
 echo "**======================== Intalling HELM =========================**"
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -10,18 +11,20 @@ sh get_helm.sh
 
 # Installing ARGO-CD using helm repos
 echo "**====================== INSTALL ARGO CD USING HELM =====================**"
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+read -p "Enter namespce to create: " NS
+kubectl create namespace $NS
+kubectl apply -n $NS -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 
 # Creating a service in k8s cluster for ArgoCD
 echo "**========================= EXPOSE ARGOCD SERVER =======================**"
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl patch svc argocd-server -n $NS -p '{"spec": {"type": "LoadBalancer"}}'
 yum install jq -y
-export ARGOCD_SERVER='kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname''
-echo $ARGOCD_SERVER
-kubectl get svc argocd-server -n argocd -o json | jq --raw-output .status.loadBalancer.ingress[0].hostname
+export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
+echo "Argo service name::  $ARGOCD_SERVER"
+#kubectl get svc argocd-server -n $NS -o json | jq --raw-output .status.loadBalancer.ingress[0].hostname
 #The above command will provide load balancer URL to access ARGO CD
+
 
 # For MINIKUBE cluster need to pulish the port to container
   # -> 'argocd-server' is name of service by default it would create a clusterIP service.
@@ -40,7 +43,6 @@ echo "paswword is::  $ARGO_PWD"
 # The above command to provide password to access argo cd
 
 echo "Inatallation and setup of ARGO-CD completed"
-echo "
 echo "------Acesss as https://<node-ip>:<node-port-ip>--------"
 
 
