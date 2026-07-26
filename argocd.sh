@@ -23,6 +23,7 @@ sleep 10
 kubectl get svc -n $NS
 LB_IP=$(kubectl get svc argocd-server -n "$NS" -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname // .status.loadBalancer.ingress[0].ip // empty')
 echo "LB_external_ip:: $LB_IP"
+# nohup kubectl port-forward service/argocd-server -n "$NS" "${NODE_PORT}:443" --address 0.0.0.0 > argocd-port-forward.log 2>&1 &
 #The above command will provide load balancer URL to access ARGO CD
 
 
@@ -31,3 +32,4 @@ ARGO_PWD=$(kubectl -n "$NS" get secret argocd-initial-admin-secret -o jsonpath="
 echo "Username: admin"
 echo "Password: $ARGO_PWD"
 
+s
