@@ -5,25 +5,27 @@ chmod 700 get_helm.sh
 helm version
 
 #INSTALL ARGO CD USING HELM
-helm repo add argo-cd https://argoproj.github.io/argo-helm
-helm repo update
-
 read -p "Enter namespace to create: " NS
 read -p "Enter name for repo: " RP
 
 kubectl create namespace $NS
-helm install $RP argo-cd/argo-cd -n $NS
+helm repo add $RP https://argoproj.github.io/argo-helm
+helm repo update
+
+read -p "Enter Release name to install argocd: " RS
+helm install $RS $RP/argo-cd -n $NS
 kubectl get all -n $NS
 
 
 #EXPOSE ARGOCD SERVER:
-kubectl patch svc argocd-server -n $NS -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl patch svc $RS-argocd-server -n $NS -p '{"spec": {"type": "NodePort"}}'
 yum install jq -y
 sleep 10
-kubectl get svc -n $NS
-LB_IP=$(kubectl get svc argocd-server -n "$NS" -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname // .status.loadBalancer.ingress[0].ip // empty')
-echo "LB_external_ip:: $LB_IP"
-# nohup kubectl port-forward service/argocd-server -n "$NS" "${NODE_PORT}:443" --address 0.0.0.0 > argocd-port-forward.log 2>&1 &
+NODE_PORT=$(kubectl get svc $RS-argocd-server -n "$NS" -o json | jq --raw-output '.spec.ports[] | select(.port==443) | .nodePort')
+kuebctl get svc -n $NS
+echo "ArgoCD server NodePort: $NODE_PORT"
+  
+nohup kubectl port-forward service/$RS-argocd-server -n "$NS" "${NODE_PORT}:443" --address 0.0.0.0 > argocd-port-forward.log 2>&1 &
 #The above command will provide load balancer URL to access ARGO CD
 
 
@@ -31,5 +33,3 @@ echo "LB_external_ip:: $LB_IP"
 ARGO_PWD=$(kubectl -n "$NS" get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 echo "Username: admin"
 echo "Password: $ARGO_PWD"
-
-s
