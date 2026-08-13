@@ -43,3 +43,22 @@ echo "------------Kubectl version-------------"
 kubectl version --client
 
 echo "**===============Installtions successfull=============**"
+
+
+: << 'END'
+# Create a EKS cliuster using eksctl
+echo "------------- Creating EKS Cluster using eksctl -------------"
+eksctl create cluster --name=EKS-1 --region=ap-south-1 --zones=ap-south-1a,ap-south-1b --without-nodegroup
+
+# Attach a IAM ROLE to the eksctl role to allow it to create nodegroups
+echo "------------- Attaching IAM ROLE to eksctl -------------"
+eksctl utils associate-iam-oidc-provider --region ap-south-1 --cluster EKS-1 --approve
+
+# Create a nodegroup using eksctl
+echo "------------- Creating Nodegroup using eksctl -------------"
+eksctl create nodegroup --cluster EKS-1 --region ap-south-1 --name=EKS-1-ng \
+--node-type=c7i-flex.large --nodes=2 --nodes-min=1 --nodes-max=3 --node-volume-size=20 \
+--ssh-access --ssh-public-key=<key_pair> --managed \
+--asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access
+
+END
