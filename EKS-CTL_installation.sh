@@ -55,6 +55,9 @@ echo "------------- Attaching IAM ROLE to eksctl -------------"
 eksctl utils associate-iam-oidc-provider --region ap-south-1 --cluster EKS-1 --approve
 
 # Create a nodegroup using eksctl
+# change the <key_pair> with your key pair name to access the nodes using ssh
+# change the node-type as per your requirement. For more details refer to https://aws.amazon.com/ec2/instance-types/
+
 echo "------------- Creating Nodegroup using eksctl -------------"
 eksctl create nodegroup --cluster EKS-1 --region ap-south-1 --name=EKS-1-ng \
 --node-type=c7i-flex.large --nodes=2 --nodes-min=1 --nodes-max=3 --node-volume-size=20 \
