@@ -10,7 +10,7 @@ helm repo list
 # Install Grsfana from repo.
 echo "**----------- Installing grafana from repo --------------**"
 kubectl create ns grafana-ns
-helm install grafana grafana-repo/grafana -n grafana-ns --set persistence.storageClassName=standard  --set persistence.enabled=true --set adminPassword='EKS!sAWSome' --set service.type=LoadBalncer
+helm install grafana grafana-repo/grafana -n grafana-ns --set persistence.storageClassName=standard  --set persistence.enabled=true --set adminPassword='EKS!sAWSome' --set service.type=LoadBalancer
 
 echo " Here, grafana installed and service create on LB; if its on MINIKUBE cluster
        don't forget to port-forward the NodePort
