@@ -10,7 +10,9 @@ helm repo list
 # Install Grsfana from repo.
 echo "**----------- Installing grafana from repo --------------**"
 kubectl create ns grafana-ns
-helm install grafana grafana-repo/grafana -n grafana-ns --set persistence.storageClassName=standard  --set persistence.enabled=true --set adminPassword='EKS!sAWSome' --set service.type=LoadBalancer
+helm install grafana grafana-repo/grafana -n grafana-ns --set persistence.storageClassName="gp2"  --set persistence.enabled=true --set adminPassword='EKS!sAWSome' --set service.type=LoadBalancer
+# Change this 'persistence.storageClassName' as per storageClassName for volume (or) create one volume with required classname.
+# check storageClassName by command: kubectl get storageClass
 
 echo " Here, grafana installed and service create on LB; if its on MINIKUBE cluster
        don't forget to port-forward the NodePort
